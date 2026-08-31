@@ -1,11 +1,20 @@
-# SO-101 Web Control
+# SO-101 Web Control — Slider Control + Trajectory Record & Playback
 
-A lightweight, dependency-minimal web panel for controlling the [SO-101](https://github.com/TheRobotStudio/SO-ARM100) (SO-ARM100) robot arm through [LeRobot](https://github.com/huggingface/lerobot). Drag sliders to move all six joints in real time — no ROS, no web framework, just one Python file.
+A lightweight, dependency-minimal web panel for the [SO-101](https://github.com/TheRobotStudio/SO-ARM100) (SO-ARM100) robot arm through [LeRobot](https://github.com/huggingface/lerobot). Drag sliders to move all six joints in real time, record a trajectory (50 Hz of the arm's true position), and play it back on demand. No ROS, no web framework — just one Python file.
+
+![SO-101 arm picking up an object](assets/grasp.jpg)
+
+| | |
+|---|---|
+| ![Reaching for the target](assets/reach.jpg) | ![Rest pose after placing the object in the tray](assets/rest.jpg) |
 
 ## Features
 
 - Real-time control of all 6 joints: `shoulder_pan`, `shoulder_lift`, `elbow_flex`, `wrist_flex`, `wrist_roll`, `gripper`
 - Smooth interpolated motion (background thread steps toward the target every 20 ms)
+- **Trajectory recording** — samples the arm's true position at 50 Hz while you move it
+- **Trajectory playback** — replays a saved trajectory with a 1 s smooth lead-in from the current pose
+- Trajectories saved as JSON under `~/.so101_arm/trajs/`
 - Rest Pose (standby posture) and Zero All buttons
 - Pure Python stdlib HTTP server — zero extra dependencies beyond LeRobot
 
@@ -35,12 +44,21 @@ python web_arm.py
 # open http://localhost:8000
 ```
 
+## Usage
+
+- **Move** — drag any slider; the arm smoothly interpolates toward the target
+- **Record** — type a name, press Record, move the arm with the sliders; press Stop & Save when done (trajectory is stored as JSON)
+- **Playback** — select a saved trajectory in the list and press Play; the arm replays it (1 s smooth lead-in from the current pose)
+- **Rest Pose** — returns the arm to the standby posture (`shoulder_pan 0 / shoulder_lift -66 / elbow_flex 98 / wrist_flex 77 / wrist_roll 0 / gripper 1`)
+- **Zero All** — zeros all six joints
+
 ## Notes
 
 - The arm's LeRobot ID must be `so_follower` (as used by `SO101Follower`). If the import fails, check the ID in your LeRobot config.
-- `REST_POSE` is tuned for the standard SO-101: `gripper: 1` means the gripper is nearly closed (0 is not fully closed on a fresh calibration).
+- `REST_POSE.gripper: 1` means the gripper is nearly closed (0 is not fully closed on a fresh calibration).
 - If a gripper servo's LED blinks, it is likely stalled (jammed) — move it away from the mechanical limit and it recovers.
 - The server binds `0.0.0.0:8000`, so other machines on your LAN can also control the arm.
+- Don't record while playback is active; stop playback first.
 
 ## Calibration
 
