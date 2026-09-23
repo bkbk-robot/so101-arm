@@ -8,6 +8,14 @@ A lightweight, dependency-minimal web panel for the [SO-101](https://github.com/
 |---|---|
 | ![Reaching for the target](assets/reach.jpg) | ![Rest pose after placing the object in the tray](assets/rest.jpg) |
 
+## 🎬 First Policy Demo
+
+The first trained policy is live — the arm picks a black block from the basket, transfers it, and drops it into the tray. One take, no cuts:
+
+![First policy demo — block-to-plate transfer](assets/demo_block_to_plate.mp4)
+
+*(Trained on teleoperated demonstrations collected with this panel; running on-device.)*
+
 ## Features
 
 - Real-time control of all 6 joints: `shoulder_pan`, `shoulder_lift`, `elbow_flex`, `wrist_flex`, `wrist_roll`, `gripper`
